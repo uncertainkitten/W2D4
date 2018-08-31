@@ -35,16 +35,29 @@ class MyQueue
 end
 
 class MyStack
+  attr_reader :min, :max
+  
   def initialize
     @store = []
+    @max = nil
+    @min = nil
   end
   
   def pop
-    @store.pop
+    popped_item = @store.pop
+    if popped_item[:num] == @max
+      @max = popped_item[:prev_max]
+    end
+    if popped_item[:num] == @min
+      @min = popped_item[:prev_min]
+    end
+    popped_item[:num]
   end
   
   def push(item)
-    @store.push(item)
+    @store.push({ num: item, prev_max: @max, prev_min: @min })
+    @max = item if max.nil? || item > max
+    @min = item if min.nil? || item < min
   end
   
   def peek
@@ -85,7 +98,3 @@ class StackQueue
     @in_stack.empty? && @out_stack.empty?
   end
 end
-
-class MinMaxStack
-end
-
